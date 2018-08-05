@@ -34,3 +34,8 @@ Next question: how do we figure out the broadcasting range? So far, I haven't fo
 Saving new layers in QGIS in memory means that they will be gone the next time you open the project.
 
 Well. That was unfortunate. Seems like I have to try and redo that analysis.
+
+## 2018-08-05
+Okay, let's take another shot at this problem, and produce an "update" with it.
+
+Right – since I don't have the broadcast ranges, I changed the visualisation to soft, fluffy clouds.
