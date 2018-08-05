@@ -2,7 +2,9 @@
 
 or something
 
-## Broadcasting Power
+## 2018-07-31
+
+### Broadcasting Power
 
 The map [here](https://map.geo.admin.ch/?topic=funksender) only shows 
 broadcasting power in words.
@@ -25,5 +27,10 @@ The translation could be found [here](https://www.bakom.admin
 
 So, basically, we have a log scale here, I'd say.
 
-## Broadcasting range
+### Broadcasting range
 Next question: how do we figure out the broadcasting range? So far, I haven't found much of a conclusive answer, since it depends on so many other variables, among them the frequency (which is information I don't have). Maybe this could help: https://en.wikipedia.org/wiki/Cellular_network. Other answers are here: https://www.quora.com/What-is-a-cell-towers-range
+
+## 2018-08-02
+Saving new layers in QGIS in memory means that they will be gone the next time you open the project.
+
+Well. That was unfortunate. Seems like I have to try and redo that analysis.
