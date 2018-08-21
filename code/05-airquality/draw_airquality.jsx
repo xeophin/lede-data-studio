@@ -218,15 +218,16 @@ function dsv(delimiter) {
 
 //endregion
 
-// Creates 5 shapes in layer 1 of document 1 // and applies a random graphic style to each
+/**
+ * The current document
+ */
 var doc = app.activeDocument;
-// alert(doc.textFrames.length);
+
 var dataItem = doc.textFrames.getByName("data");
-// alert(dataItem.contents);
+
 var data = dsv("\t").parse(dataItem.contents);
-// alert(data[1]["wert1"]);
-// alert(data["columns"]);
-// Cool, so this works: we can paste the data in a text frame, and get it from there.
+
+console.log(data.columns);
 
 var artLayer = doc.layers.add();
 artLayer.name = "values";
@@ -239,31 +240,57 @@ var MAX_HEIGHT = 200;
 var MAX = {
   ozon: 177,
   feinstaub: 100,
-  kohlenmonoxid: 1.25
+  kohlenmonoxid: 1.25,
+  schwefeldioxid: 17,
+  stickstoffdioxid: 91,
+  lufttemperatur: 31,
+  regendauer: 1410
 };
 
 doc.defaultFilled = true;
 doc.defaultStroked = false;
 
+// Set up the temperature line
+var temperatureReadings = [];
+
+// loop through all the data
 for (var i = 0; i < data.length; i++) {
   dataPoint = data[i];
-  height = (MAX_HEIGHT * parseFloat(dataPoint.ozon)) / MAX.ozon;
+
+  // temperatur line
+
+  temperatureReadings.push([
+    i * ELEMENT_WIDTH + ELEMENT_WIDTH / 2,
+    isNaN(dataPoint.lufttemperatur)
+      ? 0.0
+      : parseFloat(dataPoint.lufttemperatur) * 5
+  ]);
+
+  // Air Quality Handling
   var rect = artLayer.pathItems.rectangle(
-    height,
+    MAX_HEIGHT,
     ELEMENT_WIDTH * i,
     ELEMENT_WIDTH,
-    height
+    MAX_HEIGHT
   );
 
-  var someColor = new LabColor();
-  (someColor.a =
-    (parseFloat(dataPoint.kohlenmonoxid) / MAX.kohlenmonoxid) * 128),
-    (someColor.b = 0),
-    (someColor.l =
-      100 - (parseFloat(dataPoint.feinstaub) / MAX.feinstaub) * 100);
+  var someColor = new CMYKColor();
+  someColor.black = isNaN(dataPoint.feinstaub)
+    ? 0
+    : (parseFloat(dataPoint.feinstaub) / MAX.feinstaub) * 100;
+  someColor.magenta = isNaN(dataPoint.ozon)
+    ? 0
+    : (parseFloat(dataPoint.ozon) / MAX.ozon) * 100;
+  someColor.yellow = isNaN(dataPoint.schwefeldioxid)
+    ? 0
+    : (parseFloat(dataPoint.schwefeldioxid) / MAX.schwefeldioxid) * 100;
+  someColor.cyan = isNaN(dataPoint.stickstoffdioxid)
+    ? 0
+    : (parseFloat(dataPoint.stickstoffdioxid) / MAX.stickstoffdioxid) * 100;
 
   rect.fillColor = someColor;
 
+  // Date Handling
   if (i % 5 === 0) {
     var descr = artLayer.textFrames.pointText([(i + 1) * ELEMENT_WIDTH, 2]);
     descr.contents = dataPoint.datum;
@@ -277,4 +304,10 @@ for (var i = 0; i < data.length; i++) {
       Transformation.BOTTOMRIGHT
     );
   }
+
+  var line = artLayer.pathItems.add();
+  line.setEntirePath(temperatureReadings);
+  line.stroked = true;
+  line.filled = false;
+  line.zOrder(ZOrderMethod.BRINGTOFRONT);
 }
