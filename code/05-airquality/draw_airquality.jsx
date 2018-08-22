@@ -247,6 +247,22 @@ var MAX = {
   regendauer: 1410
 };
 
+var monthTranslation = [
+  "",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+];
+
 doc.defaultFilled = true;
 doc.defaultStroked = false;
 
@@ -291,18 +307,12 @@ for (var i = 0; i < data.length; i++) {
   rect.fillColor = someColor;
 
   // Date Handling
-  if (i % 5 === 0) {
-    var descr = artLayer.textFrames.pointText([(i + 1) * ELEMENT_WIDTH, 2]);
-    descr.contents = dataPoint.datum;
-    descr.paragraphs[0].paragraphAttributes.justification = Justification.RIGHT;
-    descr.rotate(
-      90,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      Transformation.BOTTOMRIGHT
-    );
+  var dateElements = dataPoint.datum.split("-");
+
+  if (dateElements[2] === "01") {
+    var descr = artLayer.textFrames.pointText([i * ELEMENT_WIDTH, -10]);
+    descr.contents =
+      monthTranslation[parseInt(dateElements[1])] + " " + dateElements[0];
   }
 
   var line = artLayer.pathItems.add();
