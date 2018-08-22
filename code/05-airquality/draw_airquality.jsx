@@ -277,9 +277,9 @@ for (var i = 0; i < data.length; i++) {
 
   temperatureReadings.push([
     i * ELEMENT_WIDTH + ELEMENT_WIDTH / 2,
-    isNaN(dataPoint.lufttemperatur)
-      ? 0.0
-      : parseFloat(dataPoint.lufttemperatur) * 5
+    isNaN(parseFloat(dataPoint.lufttemperatur))
+      ? 0
+      : parseFloat(dataPoint.lufttemperatur) * 5.0
   ]);
 
   // Air Quality Handling
@@ -293,16 +293,20 @@ for (var i = 0; i < data.length; i++) {
   var someColor = new CMYKColor();
   someColor.black = isNaN(dataPoint.feinstaub)
     ? 0
-    : (parseFloat(dataPoint.feinstaub) / MAX.feinstaub) * 100;
+    : Math.ceil((parseFloat(dataPoint.feinstaub) / MAX.feinstaub) * 100);
   someColor.magenta = isNaN(dataPoint.ozon)
     ? 0
-    : (parseFloat(dataPoint.ozon) / MAX.ozon) * 100;
+    : Math.ceil((parseFloat(dataPoint.ozon) / MAX.ozon) * 100);
   someColor.yellow = isNaN(dataPoint.schwefeldioxid)
     ? 0
-    : (parseFloat(dataPoint.schwefeldioxid) / MAX.schwefeldioxid) * 100;
+    : Math.ceil(
+        (parseFloat(dataPoint.schwefeldioxid) / MAX.schwefeldioxid) * 100
+      );
   someColor.cyan = isNaN(dataPoint.stickstoffdioxid)
     ? 0
-    : (parseFloat(dataPoint.stickstoffdioxid) / MAX.stickstoffdioxid) * 100;
+    : Math.ceil(
+        (parseFloat(dataPoint.stickstoffdioxid) / MAX.stickstoffdioxid) * 100
+      );
 
   rect.fillColor = someColor;
 
@@ -314,10 +318,9 @@ for (var i = 0; i < data.length; i++) {
     descr.contents =
       monthTranslation[parseInt(dateElements[1])] + " " + dateElements[0];
   }
-
-  var line = artLayer.pathItems.add();
-  line.setEntirePath(temperatureReadings);
-  line.stroked = true;
-  line.filled = false;
-  line.zOrder(ZOrderMethod.BRINGTOFRONT);
 }
+
+var line = artLayer.pathItems.add();
+line.setEntirePath(temperatureReadings.splice(0, 1001));
+line.stroked = true;
+line.filled = false;
