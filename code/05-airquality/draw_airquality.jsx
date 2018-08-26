@@ -218,6 +218,31 @@ function dsv(delimiter) {
 
 //endregion
 
+// region Drawing functions
+function drawAReallyLongLine(anchors, layer) {
+  layer = layer || artLayer;
+  var ARBITRARY_LIMIT = 999;
+  var loopsNeeded = (anchors.length % ARBITRARY_LIMIT) + 1;
+  var group = artLayer.groupItems.add();
+
+  for (var i = 0; i <= loopsNeeded; i++) {
+    var line = group.pathItems.add();
+
+    // Get the first ARBITRARY_LIMIT items
+    var a = anchors;
+
+    if (anchors.length > ARBITRARY_LIMIT) {
+      a = anchors.splice(0, ARBITRARY_LIMIT);
+      a.push(anchors[0]);
+    }
+
+    line.setEntirePath(a);
+    line.stroked = true;
+    line.filled = false;
+  }
+}
+// endregion
+
 /**
  * The current document
  */
@@ -320,7 +345,4 @@ for (var i = 0; i < data.length; i++) {
   }
 }
 
-var line = artLayer.pathItems.add();
-line.setEntirePath(temperatureReadings.splice(0, 1001));
-line.stroked = true;
-line.filled = false;
+drawAReallyLongLine(temperatureReadings, artLayer);
